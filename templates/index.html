@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COA Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Background elements container -->
+    <div class="background-animation" id="backgroundAnimation"></div>
+    
+    <!-- Main container -->
+    <div class="container">
+        <div class="chat-container">
+            <!-- Chat header with title and theme toggle -->
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="chat-title">
+                        <h1>COA Assistant</h1>
+                        <p>Computer Organization & Architecture</p>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark</span>
+                </button>
+            </div>
+            
+            <!-- Chat messages area -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    Hello! I'm your Computer Organization & Architecture Assistant. How can I help you understand processor architecture, memory systems, and computer design today?
+                </div>
+                <div class="message user-message">
+                    What's the difference between RISC and CISC?
+                </div>
+                <div class="message bot-message">
+                    Great question! RISC (Reduced Instruction Set Computer) and CISC (Complex Instruction Set Computer) are two different processor design philosophies:
+                    
+                    RISC focuses on simplicity with fewer, optimized instructions that execute in a single cycle. This leads to faster execution, simpler hardware, lower power consumption, and is easier to pipeline. Examples include ARM, MIPS, and RISC-V.
+                    
+                    CISC uses complex instructions that can perform multiple operations in a single instruction. This reduces the number of instructions needed for a program, optimizes memory use, and provides better backward compatibility. Examples include x86 architecture used by Intel and AMD.
+                </div>
+            </div>
+            
+            <!-- Input area with suggestion chips and message input -->
+            <div class="chat-input-container">
+                <div class="chip-container">
+                    <div class="chip">CPU Architecture</div>
+                    <div class="chip">Cache Memory</div>
+                    <div class="chip">Pipelining</div>
+                    <div class="chip">Memory Hierarchy</div>
+                    <div class="chip">Assembly Language</div>
+                    <div class="chip">I/O Systems</div>
+                </div>
+                <div class="input-group">
+                    <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
+                    <i class="fas fa-paper-plane input-icon" id="sendButton"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
