@@ -23,8 +23,12 @@ def initialize_chain():
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     
-    # Load the vector store from disk
-    vector_store = FAISS.load_local("embeddings", embeddings)
+    # Load the vector store from disk with deserialization allowed
+    vector_store = FAISS.load_local(
+        "embeddings", 
+        embeddings,
+        allow_dangerous_deserialization=True  # We trust our own embeddings
+    )
     
     # Load metadata
     with open("embeddings/metadata.pkl", "rb") as f:
