@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify
 from langchain.chains import ConversationalRetrievalChain
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
@@ -12,9 +12,9 @@ import pickle
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # Required for session management
 
-def create_chain():
+# Initialize conversation chain
+def initialize_chain():
     # Get API key
     groq_api_key = os.environ.get("GROQ_API_KEY")
     
@@ -57,11 +57,14 @@ def create_chain():
     
     return chain
 
+# Initialize the chain at startup
+conversation_chain = initialize_chain()
+
+# Store conversation history
+conversation_history = []
+
 @app.route('/')
 def home():
-    # Reset session when user visits the home page
-    session.clear()
-    session['conversation_history'] = []
     return render_template('index.html')
 
 @app.route('/ask', methods=['POST'])
@@ -71,25 +74,19 @@ def ask():
     if not user_message:
         return jsonify({'answer': 'Please ask a question'})
     
-    # Initialize conversation history if it doesn't exist
-    if 'conversation_history' not in session:
-        session['conversation_history'] = []
-    
-    # Create a new chain for this request
-    chain = create_chain()
-    
     # Get response from the chain
-    result = chain({"question": user_message, "chat_history": session['conversation_history']})
+    result = conversation_chain({"question": user_message, "chat_history": conversation_history})
     answer = result["answer"]
     
-    # Update conversation history in session
-    session['conversation_history'].append((user_message, answer))
+    # Update conversation history
+    conversation_history.append((user_message, answer))
     
     return jsonify({'answer': answer})
 
 @app.route('/reset', methods=['POST'])
 def reset():
-    session['conversation_history'] = []
+    global conversation_history
+    conversation_history = []
     return jsonify({'status': 'success', 'message': 'Conversation reset successfully'})
 
 if __name__ == '__main__':
