@@ -39,7 +39,7 @@ def initialize_chain():
     # Initialize LLM
     llm = ChatGroq(
         api_key=groq_api_key,
-        model_name="mixtral-8x7b-32768",
+        model_name="mistral-saba-24b",
         temperature=0.2,
         max_tokens=4000
     )

@@ -201,31 +201,42 @@ function sendMessage() {
     chatMessages.appendChild(typingIndicator);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
-    // Simulate bot response after delay
-    setTimeout(() => {
+    // Send message to backend
+    fetch('/ask', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
         // Remove typing indicator
         chatMessages.removeChild(typingIndicator);
         
         // Add bot response
         const botResponseDiv = document.createElement('div');
         botResponseDiv.className = 'message bot-message';
-        
-        // Sample architecture responses based on keywords
-        const coaResponses = [
-            "CPU architecture refers to the design and organization of a processor, including its instruction set, registers, data paths, and control unit. Modern architectures include x86, ARM, MIPS, and RISC-V.",
-            "Cache memory is a small, fast memory located between the CPU and main memory that stores frequently accessed data to reduce memory access latency. Modern processors typically have L1, L2, and L3 cache levels.",
-            "Pipelining is a technique that increases CPU throughput by overlapping instruction execution. Each instruction is broken into stages (fetch, decode, execute, memory access, write-back) that can be processed simultaneously for different instructions.",
-            "The memory hierarchy in modern computers consists of registers, cache, main memory, and secondary storage, organized by speed, size, and cost. The principle of locality ensures that this hierarchy improves overall system performance.",
-            "Assembly language is a low-level programming language that uses mnemonics to represent machine code instructions. It provides a human-readable representation of a computer's instruction set architecture.",
-            "In computer architecture, the von Neumann bottleneck refers to the limited data transfer rate between the CPU and memory, which restricts the effective processing speed regardless of the CPU's raw speed."
-        ];
-        
-        botResponseDiv.textContent = coaResponses[Math.floor(Math.random() * coaResponses.length)];
+        botResponseDiv.textContent = data.answer;
         chatMessages.appendChild(botResponseDiv);
         
         // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }, 1500);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Remove typing indicator
+        chatMessages.removeChild(typingIndicator);
+        
+        // Add error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'message bot-message error';
+        errorDiv.textContent = 'Sorry, there was an error processing your request. Please try again.';
+        chatMessages.appendChild(errorDiv);
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
 }
 
 // Event listeners
@@ -240,6 +251,6 @@ messageInput.addEventListener('keypress', (e) => {
 chips.forEach(chip => {
     chip.addEventListener('click', () => {
         messageInput.value = chip.textContent;
-        messageInput.focus();
+        sendMessage();
     });
 });
