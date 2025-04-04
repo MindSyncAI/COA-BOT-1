@@ -7,6 +7,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Add marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .markdown-content {
+            font-family: inherit;
+            line-height: 1.6;
+        }
+        .markdown-content ul, .markdown-content ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        .markdown-content li {
+            margin: 5px 0;
+        }
+        .markdown-content code {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .markdown-content pre {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid #ccc;
+            margin: 10px 0;
+            padding-left: 16px;
+            color: #666;
+        }
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .markdown-content th, .markdown-content td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .markdown-content th {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            margin: 20px 0 10px;
+        }
+        .markdown-content p {
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Background elements container -->
@@ -34,7 +86,7 @@
             
             <!-- Chat messages area -->
             <div class="chat-messages" id="chatMessages">
-                <div class="message bot-message">
+                <div class="message bot-message markdown-content">
                     Hello! I'm your Computer Organization & Architecture Assistant. How can I help you understand processor architecture, memory systems, and computer design today?
                 </div>
             </div>
@@ -58,5 +110,28 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Configure marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+
+        // Modify the appendMessage function to render markdown
+        function appendMessage(message, isUser) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message bot-message markdown-content';
+            
+            if (isUser) {
+                messageDiv.textContent = message;
+            } else {
+                messageDiv.innerHTML = marked.parse(message);
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
 </body>
 </html>
