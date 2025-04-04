@@ -214,10 +214,10 @@ function sendMessage() {
         // Remove typing indicator
         chatMessages.removeChild(typingIndicator);
         
-        // Add bot response
+        // Add bot response with markdown rendering
         const botResponseDiv = document.createElement('div');
-        botResponseDiv.className = 'message bot-message';
-        botResponseDiv.textContent = data.answer;
+        botResponseDiv.className = 'message bot-message markdown-content';
+        botResponseDiv.innerHTML = marked.parse(data.answer);
         chatMessages.appendChild(botResponseDiv);
         
         // Scroll to bottom
